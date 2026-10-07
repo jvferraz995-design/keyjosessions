@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Keyjo Sessions</title>
+<meta name="description" content="O catálogo e o sorteio oficial de filmes do casal.">
+<meta name="theme-color" content="#06070a">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='34' fill='none' stroke='%238ef0ff' stroke-width='8'/><circle cx='50' cy='50' r='9' fill='%238ef0ff'/></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Michroma&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+<div class="bg-grid" aria-hidden="true"></div>
+<div class="app">
+
+  <header class="top">
+    <div class="topbar">
+      <span class="sys"><span class="pulse" aria-hidden="true"></span>KEYJO//SESSIONS</span>
+      <div class="session" id="sessionBox">
+        <span class="session-user" id="sessionUser" hidden></span>
+        <button class="link-btn" id="sessionBtn" type="button">entrar</button>
+      </div>
+    </div>
+    <h1>Keyjo<br><span>Sessions</span></h1>
+    <p class="tagline">o catálogo e o sorteio oficial de filmes do casal</p>
+    <dl class="stats" id="stats" aria-live="polite">
+      <div><dt>na lista</dt><dd data-stat="total">–</dd></div>
+      <div><dt>pra ver</dt><dd data-stat="unwatched">–</dd></div>
+      <div><dt>assistidos</dt><dd data-stat="watched">–</dd></div>
+      <div><dt>nossa média</dt><dd data-stat="avg">–</dd></div>
+    </dl>
+  </header>
+
+  <section id="drawSection">
+    <p class="idx">01 — sorteio</p>
+    <h2>Sortear um filme</h2>
+    <p class="section-sub">Escolham um gênero (ou deixem em "todos") e iniciem a varredura.</p>
+    <div class="draw-row">
+      <select id="genreFilter" aria-label="Gênero do sorteio"></select>
+      <button class="btn-draw" id="drawBtn" type="button">Sortear ▸</button>
+    </div>
+    <div id="drawResult" class="ticket-result" aria-live="polite"></div>
+    <p id="drawEmpty" class="ticket-empty" hidden></p>
+  </section>
+
+  <section id="addSection">
+    <p class="idx">02 — entrada</p>
+    <h2>Adicionar filme</h2>
+    <p class="section-sub">Cole o link do IMDb — as informações são preenchidas automaticamente.</p>
+    <form id="addForm" autocomplete="off">
+      <div class="field">
+        <label for="linkInput">Link do IMDb</label>
+        <div class="link-row">
+          <input type="url" id="linkInput" placeholder="https://www.imdb.com/title/tt...">
+          <button class="btn-ghost" id="fetchInfoBtn" type="button">Buscar info</button>
+        </div>
+        <div id="fetchPreview" class="fetch-preview" hidden></div>
+      </div>
+      <div class="field">
+        <label for="titleInput">Título</label>
+        <input type="text" id="titleInput" placeholder="Ex: Corra!" maxlength="200">
+      </div>
+      <div class="field">
+        <label id="genresLabel">Gêneros</label>
+        <div class="chip-grid" id="genreChips" role="group" aria-labelledby="genresLabel"></div>
+      </div>
+      <button class="btn-primary" id="addBtn" type="submit">Adicionar à lista</button>
+    </form>
+  </section>
+
+  <section id="listSection">
+    <p class="idx">03 — arquivo</p>
+    <h2>Nossa lista</h2>
+    <div class="tabs" id="tabs" role="tablist">
+      <button class="tab active" type="button" data-filter="all">Todos <span class="count" data-count="all"></span></button>
+      <button class="tab" type="button" data-filter="unwatched">Não assistidos <span class="count" data-count="unwatched"></span></button>
+      <button class="tab" type="button" data-filter="watched">Assistidos <span class="count" data-count="watched"></span></button>
+    </div>
+    <div class="list-tools">
+      <input type="search" id="searchInput" placeholder="Buscar por título..." aria-label="Buscar na lista">
+      <select id="sortSelect" aria-label="Ordenar">
+        <option value="recent">Mais recentes</option>
+        <option value="title">Título (A–Z)</option>
+        <option value="imdb">Nota IMDb</option>
+        <option value="ours">Nossa nota</option>
+        <option value="year">Ano</option>
+      </select>
+    </div>
+    <div class="movie-grid" id="movieGrid"></div>
+  </section>
+
+  <p class="footer-note" id="statusNote"></p>
+</div>
+
+<dialog class="auth" id="authDialog" aria-labelledby="authTitle">
+  <form id="authForm" method="dialog" novalidate>
+    <p class="idx" id="authEyebrow">acesso restrito</p>
+    <h2 id="authTitle">Entrar</h2>
+    <p class="section-sub" id="authSub">Só vocês dois podem mexer na lista. Entrem uma vez e o acesso fica salvo neste navegador.</p>
+    <div class="field" id="authEmailField">
+      <label for="authEmail">E-mail</label>
+      <input type="email" id="authEmail" autocomplete="username" required>
+    </div>
+    <div class="field">
+      <label for="authPassword">Senha</label>
+      <input type="password" id="authPassword" autocomplete="current-password" required>
+    </div>
+    <p class="auth-error" id="authError" role="alert" hidden></p>
+    <div class="auth-actions">
+      <button class="btn-ghost" type="button" id="authCancel">Cancelar</button>
+      <button class="btn-primary" type="submit" id="authSubmit">Entrar</button>
+    </div>
+    <button class="link-btn auth-forgot" type="button" id="authForgot">esqueci a senha</button>
+  </form>
+</dialog>
+
+<div class="toasts" id="toasts" aria-live="polite"></div>
+
+<script type="module" src="/app.js"></script>
+</body>
+</html>

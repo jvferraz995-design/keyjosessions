@@ -1,0 +1,9 @@
+[build]
+  publish = "public"
+
+[functions]
+  directory = "netlify/functions"
+
+# Permite otimizar os pôsteres do IMDb pelo Netlify Image CDN
+[images]
+  remote_images = ["https://m\\.media-amazon\\.com/.*"]
